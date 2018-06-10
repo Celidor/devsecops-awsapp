@@ -13,6 +13,11 @@ pipeline {
                 sh 'npm i'
             }
         }
+        stage('Unit Test'){
+            steps {
+                sh 'npm test'
+            }
+        }
         stage('Dev (Deploy)') {
             environment {
                 AWS_STAGE = 'dev'
