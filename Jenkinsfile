@@ -48,7 +48,7 @@ pipeline {
                 }
             }
         }
-        stage('OWASP Dependency Check Test'){
+        stage('Security Test'){
             steps {
                 dependencyCheckAnalyzer datadir: '',
                 hintsFile: '',
