@@ -1,29 +1,58 @@
+#!groovy
+
 pipeline {
-    agent {
-        docker {
-            image 'maven:3-alpine'
-            args '-v /root/.m2:/root/.m2'
-        }
+    agent any
+
+    environment {
+        AWS_REGION = 'eu-west-1'
     }
+
     stages {
-        stage('Build') {
+        stage('Build'){
             steps {
-                sh 'mvn -B -DskipTests clean package'
+                sh 'npm i'
             }
         }
-        stage('Test') {
+        stage('Unit Test'){
             steps {
-                sh 'mvn test'
+                sh 'npm run unit'
             }
-            post {
-                always {
-                    junit 'target/surefire-reports/*.xml'
+        }
+        stage('Dev (Deploy & Test)') {
+            environment {
+                AWS_STAGE = 'dev'
+            }
+            steps {
+              withCredentials([[
+                $class: 'AmazonWebServicesCredentialsBinding',
+                credentialsId: 'aws-key',
+                accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+              ]]) {
+                sh './node_modules/.bin/sls deploy -s dev'
+                sh 'npm run integration'
                 }
             }
         }
-        stage('Deliver') {
+        stage('Test (Deploy & Test)') {
+            environment {
+                AWS_STAGE = 'test'
+            }
             steps {
-                sh './jenkins/scripts/deliver.sh'
+                sh './node_modules/.bin/sls deploy -s test'
+                sh 'npm run integration'
+            }
+        }
+        stage('Prod (Deploy)'){
+            environment {
+                AWS_STAGE = 'prod'
+            }
+            when {
+                branch 'master'
+            }
+            steps {
+                sh 'echo deploying to prod'
+                sh './node_modules/.bin/sls deploy -s prod'
             }
         }
     }
