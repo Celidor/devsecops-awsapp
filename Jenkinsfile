@@ -47,9 +47,6 @@ pipeline {
             environment {
                 AWS_STAGE = 'prod'
             }
-            when {
-                branch 'master'
-            }
             steps {
               withCredentials([[
                 $class: 'AmazonWebServicesCredentialsBinding',
