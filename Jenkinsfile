@@ -13,12 +13,7 @@ pipeline {
                 sh 'npm i'
             }
         }
-        stage('Unit Test'){
-            steps {
-                sh 'npm run unit'
-            }
-        }
-        stage('Dev (Deploy & Test)') {
+        stage('Dev (Deploy)') {
             environment {
                 AWS_STAGE = 'dev'
             }
@@ -29,18 +24,22 @@ pipeline {
                 accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                 secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
               ]]) {
-                sh './node_modules/.bin/sls deploy -s dev'
-                sh 'npm run integration'
+                sh 'serverless deploy -s dev'
                 }
             }
         }
-        stage('Test (Deploy & Test)') {
+        stage('Test (Deploy)') {
             environment {
                 AWS_STAGE = 'test'
             }
             steps {
-                sh './node_modules/.bin/sls deploy -s test'
-                sh 'npm run integration'
+              withCredentials([[
+                $class: 'AmazonWebServicesCredentialsBinding',
+                credentialsId: 'aws-key',
+                accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+              ]]) {
+                sh 'serverless deploy -s test'
             }
         }
         stage('Prod (Deploy)'){
@@ -51,8 +50,14 @@ pipeline {
                 branch 'master'
             }
             steps {
+              withCredentials([[
+                $class: 'AmazonWebServicesCredentialsBinding',
+                credentialsId: 'aws-key',
+                accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+              ]]) {
                 sh 'echo deploying to prod'
-                sh './node_modules/.bin/sls deploy -s prod'
+                sh 'serverless deploy -s prod'
             }
         }
     }
