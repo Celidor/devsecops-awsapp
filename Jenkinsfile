@@ -40,6 +40,7 @@ pipeline {
                 secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
               ]]) {
                 sh 'serverless deploy -s test'
+                }
             }
         }
         stage('Prod (Deploy)'){
@@ -58,6 +59,7 @@ pipeline {
               ]]) {
                 sh 'echo deploying to prod'
                 sh 'serverless deploy -s prod'
+                }
             }
         }
     }
