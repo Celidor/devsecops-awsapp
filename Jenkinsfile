@@ -48,7 +48,23 @@ pipeline {
                 }
             }
         }
-
+        stage('Security Test'){
+            steps {
+                dependencyCheckAnalyzer datadir: '',
+                hintsFile: '',
+                includeCsvReports: false,
+                includeHtmlReports: false,
+                includeJsonReports: false,
+                includeVulnReports: false,
+                isAutoupdateDisabled: false,
+                outdir: '',
+                scanpath: '',
+                skipOnScmChange: false,
+                skipOnUpstreamChange: false,
+                suppressionFile: '',
+                zipExtensions: ''
+            }
+        }
         stage('Prod (Deploy)'){
             environment {
                 AWS_STAGE = 'prod'
