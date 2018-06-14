@@ -24,7 +24,6 @@ pipeline {
             }
             steps {
                 sh 'serverless deploy -s dev'
-                }
             }
         }
         stage('Test (Deploy)') {
@@ -33,7 +32,6 @@ pipeline {
             }
             steps {
                 sh 'serverless deploy -s test'
-                }
             }
         }
         stage('Prod (Deploy)'){
@@ -43,7 +41,6 @@ pipeline {
             steps {
                 sh 'echo deploying to prod'
                 sh 'serverless deploy -s prod'
-                }
             }
         }
     }
