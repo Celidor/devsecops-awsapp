@@ -23,12 +23,6 @@ pipeline {
                 AWS_STAGE = 'dev'
             }
             steps {
-              withCredentials([[
-                $class: 'AmazonWebServicesCredentialsBinding',
-                credentialsId: 'aws-key',
-                accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
-              ]]) {
                 sh 'serverless deploy -s dev'
                 }
             }
@@ -38,31 +32,8 @@ pipeline {
                 AWS_STAGE = 'test'
             }
             steps {
-              withCredentials([[
-                $class: 'AmazonWebServicesCredentialsBinding',
-                credentialsId: 'aws-key',
-                accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
-              ]]) {
                 sh 'serverless deploy -s test'
                 }
-            }
-        }
-        stage('Security Test'){
-            steps {
-                dependencyCheckAnalyzer datadir: '',
-                hintsFile: '',
-                includeCsvReports: false,
-                includeHtmlReports: false,
-                includeJsonReports: false,
-                includeVulnReports: false,
-                isAutoupdateDisabled: false,
-                outdir: '',
-                scanpath: '',
-                skipOnScmChange: false,
-                skipOnUpstreamChange: false,
-                suppressionFile: '',
-                zipExtensions: ''
             }
         }
         stage('Prod (Deploy)'){
@@ -70,12 +41,6 @@ pipeline {
                 AWS_STAGE = 'prod'
             }
             steps {
-              withCredentials([[
-                $class: 'AmazonWebServicesCredentialsBinding',
-                credentialsId: 'aws-key',
-                accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
-              ]]) {
                 sh 'echo deploying to prod'
                 sh 'serverless deploy -s prod'
                 }
