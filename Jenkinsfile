@@ -23,6 +23,7 @@ pipeline {
                 AWS_STAGE = 'dev'
             }
             steps {
+                sh 'serverless create_domain'
                 sh 'serverless deploy -s dev'
             }
         }
@@ -41,16 +42,6 @@ pipeline {
             steps {
                 sh 'echo deploying to prod'
                 sh 'serverless deploy -s prod'
-            }
-        }
-        stage('CDN (Deploy)'){
-            environment {
-                AWS_STAGE = 'prod'
-            }
-            steps {
-                sh 'echo deploying content delivery network'
-                sh 'serverless create_domain'
-                sh 'serverless deploy'
             }
         }
     }
