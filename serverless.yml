@@ -14,14 +14,3 @@ functions:
       - http:
           path: ping
           method: get
-
-plugins:
-  - serverless-domain-manager
-
-custom:
-  customDomain:
-    domainName: time.celidor.uk
-    stage: prod
-    basePath: ping
-    createRoute53Record: true
-    endpointType: 'regional'
