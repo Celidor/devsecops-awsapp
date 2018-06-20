@@ -23,6 +23,5 @@ custom:
     domainName: time.celidor.uk
     stage: prod
     basePath: ping
-    certificateName: *.celidor.uk
     createRoute53Record: true
     endpointType: 'regional'
